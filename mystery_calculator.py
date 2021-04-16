@@ -79,6 +79,9 @@ def make_sections(ls, size, spaces=None):
     splits list with sections of determined size
     fills in with spaces if keyword is given
     """
+    if size < 0:
+        raise ValueError('Cannot be negative')
+    
     new_list = []
 
     # Remove from list
@@ -100,17 +103,92 @@ def make_sections(ls, size, spaces=None):
 # TODO: Add function to make all items inside list the same length
 #       "1" -> " 1"
 
-# TODO: Add function to apply functions recursively inside 2d lists
-#       "if type(l) == list:
-#           inner_l = []
-#            for i in list:
-#                inner_l.append(this_function(i))
-#           new_list.append(inner_l)
 
-# Add function
+def make_size(string, size, char=" "):
+    """
+    Adds chars to the start of a string to make it the specific length
+    """
+    length = len(string)
 
+    # Add starting chars
+    new_string = char * (size - length)
+
+    # Rest of string
+    new_string += string
+
+    return new_string
+
+    
+def recursive_func(ls, func, argument=None):
+    """
+    Applies a function recursively to the list provided, has support for
+    multidimensional lists
+    has support for a single argument
+    """
+    # In case the given argument isnt a list
+    if type(ls) != list:
+        if argument == None:
+                    return func(ls)
+        else:
+                    return func(ls, argument)
+
+    new_list = []
+    for item in ls:
+        # If the item is also a list run this same function on it
+        if type(item) == list:
+            nested_list = []
+            
+            for i in item:
+                if argument == None:
+                    nested_list.append(recursive_func(i, func))
+                else:
+                    nested_list.append(recursive_func(i, func, argument))
+            
+            new_list.append(nested_list)
+
+        else:
+            if argument == None:
+                    new_list.append(func(item))
+            else:
+                    new_list.append(func(item, argument))
+
+    return new_list
+
+
+def make_table(ls, columns):
+    """
+    Displays a table with given columns
+    No support for 2d lists
+    """
+    sectioned = make_sections(ls, columns, spaces = " ")
+
+    rows = []
+    # Turn into strings
+    for row in sectioned:
+        rows.append(' '.join(row))
+
+    table = "\n".join(rows)
+    
+    return table
+    
+
+def main():
+    print("Mystery calculator :0")
+    
+    for numbers in mystery_numbers():
+        # Blank Line
+        print()
+        
+        # Make them all into strings
+        string_numbers = recursive_func(numbers, str)
+
+        # Make them all same size
+        same_size = recursive_func(string_numbers, make_size, 2)
+
+        # Displlay table
+        print(make_table(same_size, 8))
+        
+    
+    
 if __name__ == "__main__":
-    print(generate_numbers(int(input("Start: ")),
-                           int(input("End: ")),
-                           int(input("Step: "))))
-
+    main()
