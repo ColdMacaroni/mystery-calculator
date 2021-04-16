@@ -74,6 +74,7 @@ def mystery_numbers():
                                         pattern[3]))
     return numbers
 
+
 def make_sections(ls, size, spaces=None):
     """
     splits list with sections of determined size
@@ -81,7 +82,7 @@ def make_sections(ls, size, spaces=None):
     """
     if size < 0:
         raise ValueError('Cannot be negative')
-    
+
     new_list = []
 
     # Remove from list
@@ -91,7 +92,7 @@ def make_sections(ls, size, spaces=None):
 
     # Check if there are any leftovers
     if len(ls):
-        if spaces != None:
+        if spaces is not None:
             # Add amount of spaces needed to fulfill size
             for i in range(size - len(ls)):
                 ls.append(spaces)
@@ -99,9 +100,6 @@ def make_sections(ls, size, spaces=None):
         new_list.append(ls)
 
     return new_list
-
-# TODO: Add function to make all items inside list the same length
-#       "1" -> " 1"
 
 
 def make_size(string, size, char=" "):
@@ -118,7 +116,7 @@ def make_size(string, size, char=" "):
 
     return new_string
 
-    
+
 def recursive_func(ls, func, argument=None):
     """
     Applies a function recursively to the list provided, has support for
@@ -127,7 +125,7 @@ def recursive_func(ls, func, argument=None):
     """
     # In case the given argument isnt a list
     if type(ls) != list:
-        if argument == None:
+        if argument is None:
                     return func(ls)
         else:
                     return func(ls, argument)
@@ -137,17 +135,17 @@ def recursive_func(ls, func, argument=None):
         # If the item is also a list run this same function on it
         if type(item) == list:
             nested_list = []
-            
+
             for i in item:
-                if argument == None:
+                if argument is None:
                     nested_list.append(recursive_func(i, func))
                 else:
                     nested_list.append(recursive_func(i, func, argument))
-            
+
             new_list.append(nested_list)
 
         else:
-            if argument == None:
+            if argument is None:
                     new_list.append(func(item))
             else:
                     new_list.append(func(item, argument))
@@ -160,7 +158,7 @@ def make_table(ls, columns):
     Displays a table with given columns
     No support for 2d lists
     """
-    sectioned = make_sections(ls, columns, spaces = " ")
+    sectioned = make_sections(ls, columns, spaces=" ")
 
     rows = []
     # Turn into strings
@@ -168,27 +166,26 @@ def make_table(ls, columns):
         rows.append(' '.join(row))
 
     table = "\n".join(rows)
-    
+
     return table
-    
+
 
 def main():
     print("Mystery calculator :0")
-    
+
     for numbers in mystery_numbers():
         # Blank Line
         print()
-        
+
         # Make them all into strings
         string_numbers = recursive_func(numbers, str)
 
         # Make them all same size
         same_size = recursive_func(string_numbers, make_size, 2)
 
-        # Displlay table
+        # Display table
         print(make_table(same_size, 8))
-        
-    
-    
+
+
 if __name__ == "__main__":
     main()
